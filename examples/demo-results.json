@@ -1,0 +1,184 @@
+{
+  "scope": "Public educational MVP, not a complete QDS implementation",
+  "circuit_execution": {
+    "backend": "Qiskit Aer stabilizer simulator",
+    "shots": 1024,
+    "counts": {
+      "01": 254,
+      "10": 278,
+      "00": 239,
+      "11": 253
+    },
+    "qber": 0.5185546875,
+    "description": "Alice sends |0>; Eve measures in X; Bob measures in Z. Expect approximately 50% Bob errors for this fixed wrong-basis circuit.",
+    "circuit": "      \u2591 \u250c\u2500\u2500\u2500\u2510\u250c\u2500\u2510\u250c\u2500\u2500\u2500\u2510 \u2591 \u250c\u2500\u2510\n  q: \u2500\u2591\u2500\u2524 H \u251c\u2524M\u251c\u2524 H \u251c\u2500\u2591\u2500\u2524M\u251c\n      \u2591 \u2514\u2500\u2500\u2500\u2518\u2514\u2565\u2518\u2514\u2500\u2500\u2500\u2518 \u2591 \u2514\u2565\u2518\nc: 2/\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2569\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2569\u2550\n              0          1 "
+  },
+  "clean_channel": {
+    "config": {
+      "pulse_count": 10000,
+      "distance_km": 0.0,
+      "fiber_loss_db_per_km": 0.2,
+      "detector_efficiency": 1.0,
+      "baseline_qber": 0.0,
+      "test_fraction": 0.3,
+      "authentication_threshold": 0.06,
+      "verification_threshold": 0.12,
+      "seed": 42
+    },
+    "attack_intensity": 0,
+    "bob": {
+      "recipient": "Bob",
+      "detected_pulses": 10000,
+      "conclusive_bits": 5036,
+      "tested_bits": 1510,
+      "untested_bits": 3526,
+      "test_mismatches": 0,
+      "qber": 0.0,
+      "verification_qber": 0.0,
+      "simulated_overall_qber": 0.0,
+      "usable_fraction": 0.3526,
+      "executed_circuits": 4,
+      "executed_shots": 5092,
+      "register_preview": "0110001111101011001000010111011111011000111111101110110000111100"
+    },
+    "charlie": {
+      "recipient": "Charlie",
+      "detected_pulses": 10000,
+      "conclusive_bits": 4960,
+      "tested_bits": 1488,
+      "untested_bits": 3472,
+      "test_mismatches": 0,
+      "qber": 0.0,
+      "verification_qber": 0.0,
+      "simulated_overall_qber": 0.0,
+      "usable_fraction": 0.3472,
+      "executed_circuits": 4,
+      "executed_shots": 5076,
+      "register_preview": "0001111010010110110000110000011100101111111011111010101001100001"
+    },
+    "tested_bits": 2998,
+    "pooled_test_qber": 0.0,
+    "abort": false,
+    "insufficient_data": false,
+    "expected_sifted_qber": 0.0,
+    "backend": "Qiskit Aer stabilizer simulator",
+    "versions": {
+      "qiskit": "2.5.2",
+      "qiskit-aer": "0.17.2"
+    },
+    "model": "BB84-inspired four-state educational channel; not a complete QDS protocol"
+  },
+  "intercept_resend": {
+    "config": {
+      "pulse_count": 10000,
+      "distance_km": 0.0,
+      "fiber_loss_db_per_km": 0.2,
+      "detector_efficiency": 1.0,
+      "baseline_qber": 0.0,
+      "test_fraction": 0.3,
+      "authentication_threshold": 0.06,
+      "verification_threshold": 0.12,
+      "seed": 42
+    },
+    "attack_intensity": 1,
+    "bob": {
+      "recipient": "Bob",
+      "detected_pulses": 10000,
+      "conclusive_bits": 5036,
+      "tested_bits": 1510,
+      "untested_bits": 3526,
+      "test_mismatches": 368,
+      "qber": 0.24370860927152319,
+      "verification_qber": 0.26176971072036304,
+      "simulated_overall_qber": 0.25635424940428914,
+      "usable_fraction": 0.3526,
+      "executed_circuits": 8,
+      "executed_shots": 5280,
+      "register_preview": "1100000110110000001101110001011110111000111111101011000010110101"
+    },
+    "charlie": {
+      "recipient": "Charlie",
+      "detected_pulses": 10000,
+      "conclusive_bits": 4960,
+      "tested_bits": 1488,
+      "untested_bits": 3472,
+      "test_mismatches": 368,
+      "qber": 0.24731182795698925,
+      "verification_qber": 0.24452764976958524,
+      "simulated_overall_qber": 0.24536290322580645,
+      "usable_fraction": 0.3472,
+      "executed_circuits": 8,
+      "executed_shots": 5272,
+      "register_preview": "0000111001010111010000101100110000101111110110110010101001000001"
+    },
+    "tested_bits": 2998,
+    "pooled_test_qber": 0.24549699799866578,
+    "abort": true,
+    "insufficient_data": false,
+    "expected_sifted_qber": 0.25,
+    "backend": "Qiskit Aer stabilizer simulator",
+    "versions": {
+      "qiskit": "2.5.2",
+      "qiskit-aer": "0.17.2"
+    },
+    "model": "BB84-inspired four-state educational channel; not a complete QDS protocol"
+  },
+  "signing": {
+    "signature": "5cfc439acab160ef1d8821282ec471414443389cd21da8118a1d757d682509e9",
+    "message_digest": "8627677c5f7b8d7c89f4e8799ecaaa0d8d8f93acd83e9ea38b2cfe77c3b743c0",
+    "algorithm": "HMAC-SHA256 classroom wrapper, not a quantum signature"
+  },
+  "verification": {
+    "message_intact": true,
+    "bob_accepts": true,
+    "charlie_accepts": true,
+    "insufficient_data": false,
+    "message_digest": "8627677c5f7b8d7c89f4e8799ecaaa0d8d8f93acd83e9ea38b2cfe77c3b743c0",
+    "note": "Classical integrity check plus illustrative recipient thresholds. Does not establish QDS transferability or non-repudiation."
+  },
+  "tampered_verification": {
+    "message_intact": false,
+    "bob_accepts": false,
+    "charlie_accepts": false,
+    "insufficient_data": false,
+    "message_digest": "72bef01ad02ea0df7960bbaa8bff4df171c11260826e4aab20cfb619f8e38306",
+    "note": "Classical integrity check plus illustrative recipient thresholds. Does not establish QDS transferability or non-repudiation."
+  },
+  "sweep": [
+    {
+      "intensity": 0,
+      "qber": 0.0
+    },
+    {
+      "intensity": 0.25,
+      "qber": 0.058372248165443626
+    },
+    {
+      "intensity": 0.5,
+      "qber": 0.12941961307538358
+    },
+    {
+      "intensity": 0.75,
+      "qber": 0.1867911941294196
+    },
+    {
+      "intensity": 1,
+      "qber": 0.24549699799866578
+    }
+  ],
+  "sampling_bound": {
+    "n": 2998,
+    "epsilon": 0.035,
+    "observed_qber": 0.0,
+    "raw_bound": 0.001291497579716187,
+    "failure_probability_upper_bound": 0.001291497579716187,
+    "coverage_lower_bound": 0.9987085024202839,
+    "interval": [
+      0,
+      0.035
+    ],
+    "informative": true,
+    "formula": "P(|sample mean - expected mean| >= epsilon) <= 2 exp(-2 n epsilon^2)",
+    "assumptions": "Independent bounded Bernoulli observations. This is a sampling bound, not a protocol forging-security probability."
+  }
+}
