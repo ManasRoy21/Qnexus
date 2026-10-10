@@ -37,16 +37,16 @@ On Windows, create the environment with `py -3.12 -m venv .venv` and activate it
 
 Open **http://127.0.0.1:8000/**. API documentation is at **http://127.0.0.1:8000/docs**. To reproduce all dependency versions used during validation, install `requirements-lock.txt` instead of `requirements.txt`.
 
-The dashboard has a system-font fallback if the optional Google Font is unavailable. It is intended for local demonstration. Sessions live in memory and expire on restart or after 100 generated experiments.
+The dashboard follows the original console's light navy-and-mint design, serif headings, and six numbered stages. **Reset Workflow** clears local UI state; next/back buttons navigate the stages. **Circuit execution** is available separately in the header. The dashboard has system-font fallbacks if optional Google Fonts are unavailable. It is intended for local demonstration. Sessions live in memory and expire on restart or after 100 generated experiments.
 
 ## Quick demo
 
-1. Leave the defaults at 10,000 pulses and seed 42. Click **Generate material**.
+1. Select **Four-State Channel** in Protocol, then proceed to **02 Material**. Leave 10,000 pulses and seed 42; click **Generate Signature Material**.
 2. Open **Signing**, sign the sample message, then verify it. Change the text and verify again to demonstrate tampering detection.
 3. Open **Attack** and run full intercept-resend. Compare the error rate and decision with the baseline.
 4. Open **Sweeps** and run intensities 0–1 in steps of 0.1. Examine the measured errors and model expectation.
 5. Open **Sampling bounds**. A bound of 1 is uninformative, not proof of security.
-6. Open **Circuit execution** and run the 1,024-shot example. The circuit and actual counts appear.
+6. Click **Circuit execution** in the header and run the 1,024-shot example. The circuit and actual counts appear.
 7. Download the JSON experiment report.
 
 For an ideal baseline, use distance 0, detector efficiency 1, and baseline QBER 0. See [the walkthrough](docs/DEMO.md).
@@ -85,7 +85,7 @@ docs/                 Implementation details and demo guide
 
 See [implementation details](docs/IMPLEMENTATION.md) for formulas, the API, and model boundaries.
 
-![Public MVP executing the Qiskit circuit](docs/public-mvp.png)
+![Public research console with Qiskit-generated material telemetry](docs/public-mvp.png)
 
 ## Boundaries and roadmap
 

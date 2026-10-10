@@ -1,24 +1,149 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#161024"><title>QNexus — Public Research MVP</title><link rel="stylesheet" href="/static/style.css"><script src="/static/app.js" defer></script></head>
-<body><header><a class="brand" href="/" aria-label="QNexus home"><span class="brand-icon">Q</span>QNexus</a><span class="team">Schrödinger's Squad</span><a href="/docs" target="_blank" rel="noopener">API docs ↗</a></header>
-<main><div class="eyebrow">QUANTUM DIGITAL SIGNATURE RESEARCH</div><h1>A small lab for<br><span>big quantum questions.</span></h1><p class="intro">Prepare quantum states, measure a simulated channel, and explore how interference changes the results.</p><p class="scope">Public educational MVP · Real Qiskit Aer circuit execution · Simplified signing demonstration</p>
-<nav aria-label="Experiment stages"><button class="tab active" data-panel="material">01 Material</button><button class="tab" data-panel="signing">02 Signing</button><button class="tab" data-panel="attack">03 Attack</button><button class="tab" data-panel="sweep">04 Sweeps</button><button class="tab" data-panel="bounds">05 Sampling bounds</button><button class="tab" data-panel="circuit">06 Circuit execution</button></nav>
-<div id="status" role="status" aria-live="polite">Start by generating an experiment. Everything runs locally.</div>
-<section class="panel" id="material"><div class="section-top"><div><div class="eyebrow">01 / CONFIGURE & GENERATE</div><h2>Signature material experiment</h2></div><span class="tag">Four-state channel model</span></div><p>Each detected, matching-basis sample comes from an executed quantum circuit. Bob and Charlie receive independent simulated channels.</p>
-<form id="material-form"><div class="fields">
-<label>Pulse count<input id="pulse_count" type="number" min="200" max="20000" step="200" value="10000" required><small>Signals attempted per recipient.</small></label>
-<label>Distance (km)<input id="distance_km" type="number" min="0" max="100" step="1" value="25" required><small>Longer links lose more signals.</small></label>
-<label>Fiber loss (dB/km)<input id="fiber_loss_db_per_km" type="number" min="0" max="1" step="0.01" value="0.2" required></label>
-<label>Detector efficiency<input id="detector_efficiency" type="number" min="0.001" max="1" step="0.001" value="0.1" required><small>0.1 means 10% efficiency.</small></label>
-<label>Baseline QBER<input id="baseline_qber" type="number" min="0" max="0.5" step="0.005" value="0.01" required><small>0.01 means 1% error probability.</small></label>
-<label>Test fraction<input id="test_fraction" type="number" min="0.01" max="0.99" step="0.01" value="0.3" required><small>Fraction used to estimate errors.</small></label>
-<label>Bob's threshold<input id="authentication_threshold" type="number" min="0" max="0.49" step="0.01" value="0.06" required></label>
-<label>Charlie's threshold<input id="verification_threshold" type="number" min="0.01" max="0.5" step="0.01" value="0.12" required></label>
-<label>Random seed<input id="seed" type="number" min="0" max="2147483647" value="42" required><small>Repeat the same sampled experiment.</small></label>
-</div><button class="primary" type="submit">Generate material →</button></form><div id="material-result" class="result" hidden></div></section>
-<section class="panel" id="signing" hidden><div class="eyebrow">02 / SIGN & VERIFY</div><h2>Message integrity demonstration</h2><p>This public MVP uses a classical HMAC wrapper for message integrity, then checks the recipients' simulated mismatch rates. It is not a complete quantum signature scheme.</p><label>Message<textarea id="message" rows="3" maxlength="4096">QNexus hackathon demonstration</textarea></label><div class="actions"><button class="primary" id="sign-button">Sign message</button><button id="verify-button">Verify current message</button></div><p class="hint">After signing, change the message and verify again to demonstrate tampering detection.</p><div id="signing-result" class="result" hidden></div></section>
-<section class="panel" id="attack" hidden><div class="eyebrow">03 / CONTROLLED INTERFERENCE</div><h2>Intercept and resend</h2><p>Eve intercepts a chosen fraction of signals, measures in a random basis, and sends the resulting state onward. Bob and Charlie check a random test sample for errors.</p><label>Interception intensity: <output id="intensity-label">100%</output><input id="intensity" type="range" min="0" max="1" step="0.05" value="1"></label><button class="primary" id="attack-button">Execute attack simulation →</button><div id="attack-result" class="result" hidden></div></section>
-<section class="panel" id="sweep" hidden><div class="eyebrow">04 / COMPARE EXPERIMENTS</div><h2>How does attack strength change QBER?</h2><p>Use the same configuration and seed at each intensity. Finite samples fluctuate; this graph compares measured test errors with the model's expected curve.</p><div class="fields compact"><label>Minimum intensity<input id="sweep-min" type="number" min="0" max="1" step="0.1" value="0"></label><label>Maximum intensity<input id="sweep-max" type="number" min="0" max="1" step="0.1" value="1"></label><label>Step<input id="sweep-step" type="number" min="0.05" max="1" step="0.05" value="0.1"></label></div><button class="primary" id="sweep-button">Execute sweep →</button><div id="sweep-result" class="result" hidden></div></section>
-<section class="panel" id="bounds" hidden><div class="eyebrow">05 / UNDERSTAND THE SAMPLE</div><h2>Hoeffding sampling bound</h2><p>Estimate how far a sampled error rate may be from its expected value under independent-observation assumptions. This calculation is not a QDS security proof.</p><div class="fields compact"><label>Independent tested samples (n)<input id="bound-n" type="number" min="1" max="1000000" value="162"></label><label>Error tolerance (ε)<input id="bound-epsilon" type="number" min="0.001" max="1" step="0.001" value="0.035"><small>0.035 means 3.5 percentage points.</small></label><label>Observed QBER<input id="bound-qber" type="number" min="0" max="1" step="0.001" value="0"></label></div><button class="primary" id="bound-button">Compute bound →</button><div id="bounds-result" class="result" hidden></div></section>
-<section class="panel" id="circuit" hidden><div class="eyebrow">06 / EXECUTE ON QISKIT AER</div><h2>See the quantum circuit</h2><p>Alice prepares |0⟩, Eve measures in the X basis, and Bob measures in Z. For this fixed wrong-basis example, Bob's error rate is approximately 50%. In a full random-basis intercept-resend sweep it is approximately 25% at zero baseline noise.</p><button class="primary" id="circuit-button">Run 1,024 circuit shots →</button><div id="circuit-result" class="result" hidden></div></section>
-<footer><button id="report-button">Download experiment report</button><p>This is an independent public teaching implementation. Full QDS protocols, security proofs, optical coherent-state models, hardware execution, and QML are outside this MVP.</p><a href="https://quantumdigitalsignature.vercel.app/" target="_blank" rel="noopener">Separate deployed research demo ↗</a></footer></main></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071842">
+  <title>QNexus | Quantum Digital Signature Research Console</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <div class="platform-bar">
+    <span><i class="dot"></i> QUANTUM SIMULATION PLATFORM</span>
+    <span class="platform-description">Quantum Digital Signature Simulation &amp; Benchmarking Engine</span>
+    <span class="platform-meta"><b>SIMULATED QUANTUM RUNS</b><span>Baseline: <strong>Four-state public model</strong></span></span>
+  </div>
+  <header>
+    <a class="brand" href="/" aria-label="QNexus home">
+      <span class="brand-icon" aria-hidden="true">01<br>10</span>
+      <span><span class="brand-line">QNexus <b>SIMULATION ENGINE</b></span><small>PROTOCOL SIMULATION &amp; VERIFICATION</small></span>
+    </a>
+    <div class="header-nav" aria-label="Research tools">
+      <a href="https://quantumdigitalsignature.vercel.app/" target="_blank" rel="noopener">ORIGINAL DEMO ↗</a>
+      <a class="selected" href="#workflow">RESEARCH WORKFLOW</a>
+      <button class="tool-link" data-go="sweep">BENCHMARKS &amp; SWEEPS</button>
+    </div>
+    <div class="header-tools"><span class="engine-badge"><i class="dot"></i> Qiskit Aer</span><button class="navy small-button" data-go="circuit">Circuit execution ↗</button></div>
+  </header>
+  <main id="workflow">
+    <div class="console-intro">
+      <div class="console-copy">
+        <span class="platform-chip"><i class="dot"></i> CENTRAL UNIFIED SIMULATION PLATFORM</span>
+        <h1>Quantum Digital Signature Research Console</h1>
+        <p>Explore protocol selection, material generation, message signing, controlled interference, parameter sweeps, and statistical sampling bounds.</p>
+      </div>
+      <div class="console-meta"><b>SEED-DRIVEN RUNS</b><span>LOCAL SIMULATION</span></div>
+    </div>
+    <div class="scope-line"><span class="team">Schrödinger's Squad</span><span>PUBLIC EDUCATIONAL MVP</span><span>FOUR-STATE CHANNEL · CLASSICAL SIGNING DEMO</span></div>
+    <nav class="workflow-nav" aria-label="Experiment stages">
+      <div class="step-tabs">
+        <button class="tab active" data-panel="protocol">01 PROTOCOL</button>
+        <button class="tab" data-panel="material">02 MATERIAL</button>
+        <button class="tab" data-panel="signing">03 SIGNING</button>
+        <button class="tab" data-panel="attack">04 ATTACK</button>
+        <button class="tab" data-panel="sweep">05 SWEEPS</button>
+        <button class="tab" data-panel="bounds">06 STAT BOUNDS</button>
+      </div>
+      <button class="reset" id="reset-button">↻ RESET WORKFLOW</button>
+    </nav>
+    <div id="status" role="status" aria-live="polite">Select the public model to begin your research workflow.</div>
+
+    <section class="panel" id="protocol">
+      <div class="panel-heading"><div class="eyebrow">STEP 01 OF 06</div><h2>Select Quantum Simulation Model</h2><p>Select the implemented public model to configure channels, generate material, and study controlled interference.</p></div>
+      <div class="protocol-grid">
+        <label class="protocol-card selected-model">
+          <input type="radio" name="protocol" value="four-state" checked aria-label="Select four-state Qiskit model">
+          <div class="protocol-title">Four-State Channel <span class="model-check">✓</span></div>
+          <div class="badges"><span class="badge quantitative">QISKIT AER</span><span class="badge">IMPLEMENTED</span></div>
+          <p>BB84-inspired Z/X state preparation, basis sifting, channel noise, and intercept-resend measurement experiments for Bob and Charlie.</p>
+          <div class="protocol-default">Default distance: <strong>25 km</strong></div>
+        </label>
+        <article class="protocol-card planned"><div class="protocol-title">Practical QDS</div><div class="badges"><span class="badge">PLANNED PROTOCOL</span></div><p>A complete optical QDS distribution, recipient symmetrisation, signing construction, and security analysis are future work.</p><div class="protocol-default">Not implemented in the public MVP</div></article>
+        <article class="protocol-card planned"><div class="protocol-title">Additional QDS Models</div><div class="badges"><span class="badge">RESEARCH ROADMAP</span></div><p>MDI-QDS, OTUH-QDS, and Twin-Field QDS are candidate extensions. This public build runs the four-state channel only.</p><div class="protocol-default">No simulated results claimed here</div></article>
+      </div>
+      <div class="stage-footer"><span class="selected-protocol">Selected model: <strong>Four-State Channel</strong></span><button class="primary" data-go="material">Proceed to Step 02: Generate Signature Material →</button></div>
+    </section>
+
+    <section class="panel" id="material" hidden>
+      <div class="panel-heading"><div class="eyebrow">STEP 02 OF 06</div><h2>Generate Signature Material</h2><p>Configure the physical channel approximation and execute seeded Qiskit measurement runs for both recipients.</p></div>
+      <form id="material-form">
+        <div class="distribution-pipeline" aria-label="Distribution and sifting pipeline">
+          <div><span>SOURCE</span><strong>Alice</strong><small id="pipeline-pulses">10,000 pulses</small></div><b aria-hidden="true">→</b>
+          <div><span>CHANNEL</span><strong id="pipeline-distance">25 km</strong><small>Loss + baseline noise</small></div><b aria-hidden="true">→</b>
+          <div><span>RECEIVERS</span><strong>Bob &amp; Charlie</strong><small>Matching-basis detection</small></div><b aria-hidden="true">→</b>
+          <div><span>MATERIAL</span><strong>Test + Untested</strong><small>Conclusive registers</small></div>
+        </div>
+        <div class="material-layout">
+          <div class="configuration">
+            <h3 class="section-label">CHANNEL CONFIGURATION</h3>
+            <div class="fields">
+              <label class="range-field full-field">Pulse Count <output id="pulse-label">10,000</output><input id="pulse_count" aria-label="Pulse Count" type="range" min="200" max="20000" step="200" value="10000"><small>Signals attempted per recipient.</small></label>
+              <label class="range-field full-field">Distance <output id="distance-label">25 km</output><input id="distance_km" aria-label="Distance" type="range" min="0" max="100" step="1" value="25"><small>Longer links lose more signals.</small></label>
+              <label>Fiber Loss (dB/km)<input id="fiber_loss_db_per_km" type="number" min="0" max="1" step="0.01" value="0.2" required></label>
+              <label>Detector Efficiency<input id="detector_efficiency" type="number" min="0.001" max="1" step="0.001" value="0.1" required><small>0.1 means 10% efficiency.</small></label>
+              <label>Baseline QBER (e₀)<input id="baseline_qber" type="number" min="0" max="0.5" step="0.005" value="0.01" required></label>
+              <label>Test Fraction (β)<input id="test_fraction" type="number" min="0.01" max="0.99" step="0.01" value="0.3" required></label>
+              <label>Authentication Threshold (Tₐ)<input id="authentication_threshold" type="number" min="0" max="0.49" step="0.01" value="0.06" required></label>
+              <label>Verification Threshold (Tᵥ)<input id="verification_threshold" type="number" min="0.01" max="0.5" step="0.01" value="0.12" required></label>
+              <label class="full-field">Random Seed<input id="seed" type="number" min="0" max="2147483647" value="42" required><small>Reproduce the same sampled experiment.</small></label>
+            </div>
+            <button class="primary full-button" type="submit">Generate Signature Material →</button>
+          </div>
+          <aside class="telemetry"><h3 class="section-label">SIGNATURE MATERIAL TELEMETRY</h3><div id="material-empty" class="empty-state"><div class="empty-symbol" aria-hidden="true">01<br>10</div><strong>Awaiting channel simulation</strong><p>Run material generation to inspect conclusive bits, QBER, usable registers, and actual circuit execution.</p></div><div id="material-result" class="result" hidden></div></aside>
+        </div>
+      </form>
+      <div class="stage-footer"><button class="outline-button" data-go="protocol">← Back to Step 01</button><button class="primary" data-go="signing">Proceed to Step 03: Alice Signs Message →</button></div>
+    </section>
+
+    <section class="panel" id="signing" hidden>
+      <div class="panel-heading"><div class="eyebrow">STEP 03 OF 06</div><h2>Alice Signs &amp; Recipients Verify</h2><p>Bind a message to the current experiment and inspect the recipients' acceptance checks.</p></div>
+      <p class="method-note">Public implementation: HMAC-SHA256 demonstrates classical message integrity; simulated mismatch thresholds illustrate recipient checks.</p>
+      <label class="message-label">MESSAGE PAYLOAD<textarea id="message" rows="3" maxlength="4096">QNexus hackathon demonstration</textarea></label>
+      <div class="actions"><button class="primary" id="sign-button">Alice Signs Document</button><button class="outline-button" id="verify-button">Verify Signature &amp; Recipient Checks</button></div>
+      <p class="hint">After signing, edit the message and verify again to demonstrate tampering detection.</p>
+      <div id="signing-result" class="result" hidden></div>
+      <div class="stage-footer"><button class="outline-button" data-go="material">← Back to Step 02</button><button class="primary" data-go="attack">Proceed to Step 04: Threat Simulation →</button></div>
+    </section>
+
+    <section class="panel" id="attack" hidden>
+      <div class="panel-heading"><div class="eyebrow">STEP 04 OF 06</div><h2>Protocol-Aware Threat Simulation</h2><p>Introduce controlled interference and compare measured errors against your configured channel threshold.</p></div>
+      <div class="threat-card"><div class="threat-marker">EVE</div><div><h3>Intercept-Resend / Eavesdropping</h3><span class="badge quantitative">IMPLEMENTED CHANNEL ATTACK</span><p>Eve intercepts a fraction of signals, measures in a random basis, then forwards the collapsed state to the recipient.</p></div></div>
+      <label class="range-field intensity-field">Attack Intensity (γ)<output id="intensity-label">100%</output><input id="intensity" aria-label="Attack Intensity" type="range" min="0" max="1" step="0.05" value="1"><small>0 means no interception; 1 means all signals are intercepted.</small></label>
+      <button class="primary" id="attack-button">Execute Threat Simulation →</button>
+      <div id="attack-result" class="result" hidden></div>
+      <div class="stage-footer"><button class="outline-button" data-go="signing">← Back to Step 03</button><button class="primary" data-go="sweep">Proceed to Step 05: Parameter Sweeps →</button></div>
+    </section>
+
+    <section class="panel" id="sweep" hidden>
+      <div class="panel-heading"><div class="eyebrow">STEP 05 OF 06</div><h2>Multi-Point Parameter Sweeps</h2><p>Compare attack intensities using the same channel settings and seed. Measured finite samples can fluctuate around the model expectation.</p></div>
+      <div class="sweep-config"><div class="section-label">SWEPT PARAMETER: INTERCEPTION INTENSITY (γ)</div><div class="fields compact"><label>Minimum<input id="sweep-min" type="number" min="0" max="1" step="0.1" value="0"></label><label>Maximum<input id="sweep-max" type="number" min="0" max="1" step="0.1" value="1"></label><label>Step<input id="sweep-step" type="number" min="0.05" max="1" step="0.05" value="0.1"></label></div><button class="primary" id="sweep-button">EXECUTE SWEEP →</button></div>
+      <div id="sweep-result" class="result" hidden></div>
+      <div class="stage-footer"><button class="outline-button" data-go="attack">← Back to Step 04</button><button class="primary" data-go="bounds">Proceed to Step 06: Statistical Bounds →</button></div>
+    </section>
+
+    <section class="panel" id="bounds" hidden>
+      <div class="panel-heading"><div class="eyebrow">STEP 06 OF 06</div><h2>Finite-Sample Statistical Analysis</h2><p>Inspect the Hoeffding deviation estimate under independent-observation assumptions.</p></div>
+      <div class="formula-box"><span class="section-label">HOEFFDING TWO-SIDED SAMPLING BOUND</span><strong>P(|x̄ − E[x]| ≥ ε) ≤ 2 exp(−2nε²)</strong><p>A sampling calculation helps interpret the available data. It is not a protocol-level QDS security proof.</p></div>
+      <div class="fields compact"><label>Independent Tested Samples (n)<input id="bound-n" type="number" min="1" max="1000000" value="162"></label><label>Error Tolerance (ε)<input id="bound-epsilon" type="number" min="0.001" max="1" step="0.001" value="0.035"><small>0.035 means 3.5 percentage points.</small></label><label>Observed QBER<input id="bound-qber" type="number" min="0" max="1" step="0.001" value="0"></label></div>
+      <button class="primary" id="bound-button">COMPUTE HOEFFDING BOUND →</button>
+      <div id="bounds-result" class="result" hidden></div>
+      <div class="stage-footer"><button class="outline-button" data-go="sweep">← Back to Step 05</button><button class="primary" data-go="report">View Final Experiment Report →</button></div>
+    </section>
+
+    <section class="panel" id="circuit" hidden>
+      <div class="panel-heading"><div class="eyebrow">QISKIT / EXECUTION EVIDENCE</div><h2>Quantum Circuit Execution</h2><p>Execute the circuit and inspect its actual simulator measurement counts.</p></div>
+      <p class="method-note">Alice prepares |0⟩, Eve measures in X, and Bob measures in Z. This fixed wrong-basis case expects approximately 50% errors. A full random-basis intercept-resend sweep expects approximately 25% at zero baseline noise.</p>
+      <button class="primary" id="circuit-button">Run 1,024 Circuit Shots →</button><div id="circuit-result" class="result" hidden></div>
+      <div class="stage-footer"><span class="selected-protocol">Backend: <strong>Qiskit Aer</strong></span><button class="outline-button" data-go="protocol">Back to Research Workflow →</button></div>
+    </section>
+
+    <section class="panel" id="report" hidden>
+      <div class="panel-heading"><div class="eyebrow">EXPERIMENT / SUMMARY</div><h2>QDS Research Experiment Report</h2><p>Review the completed activities and download the actual public-model outputs.</p></div><div id="report-summary" class="result"></div><div class="stage-footer"><span class="selected-protocol">Format: <strong>JSON</strong></span><button class="primary" id="report-button">Download Experiment Report →</button></div>
+    </section>
+  </main>
+  <footer>
+    <div class="footer-grid"><div><h3>QNEXUS RESEARCH CONSOLE</h3><p>Seeded Qiskit experiments, controlled channel interference, and statistical sampling analysis.</p><span class="badge">Schrödinger's Squad</span></div><div><h3>PUBLIC MODEL COVERAGE</h3><p>Four-state preparation &amp; measurement<br>Intercept-resend channel attack<br>Classical message integrity demo</p><a href="/docs" target="_blank" rel="noopener">Interactive API documentation ↗</a></div><div><h3>IMPLEMENTATION SCOPE</h3><p>Complete QDS protocols, recipient symmetrisation, security proofs, optical detector models, real hardware, and QML are future work.</p></div></div><div class="footer-bottom"><span>QNexus · Public educational implementation</span><a href="https://quantumdigitalsignature.vercel.app/" target="_blank" rel="noopener">Separate deployed research demo ↗</a></div>
+  </footer>
+</body>
+</html>
